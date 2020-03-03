@@ -1,7 +1,6 @@
 graph: &graph
   all:
     filter:
-      - graph@run_python.py
       - graph@dot.py
       - graph@matplot.py
       - graph@plantuml.py
