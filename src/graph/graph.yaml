@@ -1,0 +1,28 @@
+graph: &graph
+  all:
+    filter:
+      - graph@run_python.py
+      - graph@dot.py
+      - graph@matplot.py
+      - graph@plantuml.py
+      - graph@tikz.py
+      - graph@mermaid.py
+  pdf: &pdf
+    add-to-template: 
+      - |
+        \usepackage{tikz}
+        $for(tikz-packages)$
+        \usetikzlibrary{$tikz-packages$}
+        $endfor$
+  latex: *pdf
+
+image_folder: &image_folder
+  inherits: graph
+  all:
+    dot-image-folder: ./images
+    plot-image-folder: ./images
+    plantuml-image-folder: ./images
+    tikz-image-folder: ./images
+    mermaid-image-folder: ./images
+
+Default: *graph
