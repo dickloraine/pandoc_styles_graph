@@ -13,6 +13,9 @@ graph: &graph
         $for(tikz-packages)$
         \usetikzlibrary{$tikz-packages$}
         $endfor$
+        $for(tikz-gdpackages)$
+        \usegdlibrary{$tikz-gdpackages$}
+        $endfor$
   latex: *pdf
 
 image_folder: &image_folder

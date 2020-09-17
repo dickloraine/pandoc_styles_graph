@@ -89,7 +89,7 @@ show
 
 **Example:**
 
-    ``` {.plot}
+    ``` {.python .plot}
     from matplotlib.colors import BoundaryNorm
     from matplotlib.ticker import MaxNLocator
 
@@ -159,6 +159,16 @@ height
 background
   : The background color.
 
+**Example**
+
+    ``` mermaid
+    graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+    ```
+
 ### plantuml
 
 **Requirements:**
@@ -179,11 +189,17 @@ background
 plantuml-command
   : Global option to set the command line command for plantuml, if it is not just plantuml.
 
+**Example**
+
+    ``` puml
+    Bob->Alice : hello
+    ```
+
 ### tikz
 
 **Requirements:**
 
-- pdflatex
+- lualatex/pdflatex
 - ghostscript
 - [image magick](https://imagemagick.org/index.php)
 
@@ -211,6 +227,9 @@ tikz-packages
 pdf
   : If set to true, even in pdfs an image is created
 
+tikz-engine
+  : Set the pdf engine to use. Either lualatex or pdflatex. Default: lualatex
+
 magick-convert-src
   : Expert setting for converting. Default: `-density 300 -trim`
 
@@ -224,11 +243,11 @@ magick-convert-dst
     \node[state, accepting] at (4,4)    (s)  {$s$};
     \node[state]            at (0,0)    (0)  {$0$};
     \node[state]            at (8,0)    (1)  {$1$};
-    \path[->] (s)  edge        node {0, u}           (0)
-            (s)  edge        node {1, u}           (1)
-            (0)  edge [loop below]        node {0, g}           (0)
-            (0)  edge [bend left]        node {1, u}           (1)
-            (1)  edge [bend left]         node {0, u}           (0)
-            (1)  edge [loop below]       node {1, g}           (1);
+    \path[->] (s)  edge                 node {0, u}           (0)
+            (s)    edge                 node {1, u}           (1)
+            (0)    edge [loop below]    node {0, g}           (0)
+            (0)    edge [bend left]     node {1, u}           (1)
+            (1)    edge [bend left]     node {0, u}           (0)
+            (1)    edge [loop below]    node {1, g}           (1);
     \end{tikzpicture}
     ```

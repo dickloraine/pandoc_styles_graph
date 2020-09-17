@@ -27,7 +27,10 @@ and highest quality for dst.
 
 With the attribute "pdf=true" the tikz images will be processed in pdfs too.
 
-Needs image magick, pdflatex and ghostscript
+Some tikz libraries use lualatex, so that is used by default. But you can set any TeX
+engine you like with the metadata field "tikz-engine".
+
+Needs image magick, pdflatex/lualatex and ghostscript
 """
 import hashlib
 import os
@@ -53,6 +56,7 @@ def tikz(self):
     fmt = self.attributes.get("format") or self.get_metadata("tikz-image-format", "png")
     file_name = file_path = f"{file_name_hash}.{fmt}"
     folder = self.attributes.get("folder") or self.get_metadata("tikz-image-folder")
+    latex_engine = self.get_metadata("tikz-engine", "lualatex")
     if folder:
         if not os.path.isdir(folder):
             os.makedirs(folder)
@@ -61,9 +65,12 @@ def tikz(self):
     if not os.path.isfile(file_path):
         packages = "\n".join(f"\\usetikzlibrary{{{p}}}"
                              for p in make_list(self.get_metadata("tikz-packages", [])))
+        gdpackages = "\n".join(f"\\usegdlibrary{{{p}}}"
+                             for p in make_list(self.get_metadata("tikz-gdpackages", [])))
         tex_code = f"""\\documentclass{{standalone}}
                        \\usepackage{{tikz}}
                        {packages}
+                       {gdpackages}
                        \\begin{{document}}
                        {self.text}
                        \\end{{document}}
@@ -73,7 +80,7 @@ def tikz(self):
         with TemporaryDirectory() as tmpdir:
             with change_dir(tmpdir):
                 temp_file = file_write(f"{file_name_hash}.tex", tex_code)
-                run_process(f'pdflatex {temp_file}', True)
+                run_process(f'{latex_engine} {temp_file}', True)
                 run_process(f'magick convert {magick_convert_src} {file_name_hash}.pdf '
                             f'{magick_convert_dst} {file_name}', True)
                 os.rename(file_name, file_path_abs)
