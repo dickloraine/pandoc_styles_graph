@@ -22,7 +22,7 @@ Install with:
 
 You write the code for the image inside a codeblock with the name of the engine used.
 
-You can often give some options for the rendering. If the option should be used only for the current image, just give it as an attribute to the codeblock. If it should be used for all images, you can add it to the metadata by prefixing the option with the engines name.
+You can often give some options for the rendering. If the option should be used only for the current image, just give it as an attribute to the codeblock. If it should be used for all images, you can add it to the metadata by prefixing the option with the engines name. You can give a width and/or hight as an attribute for any of the engines. If no unit is given, `px` is assumed.
 
 The images are saved in the current folder by default. This can be changed in the metadata with `engine-image-folder`, where engine is the engine that should use that folder. The image format is per default png, but can be changed for some engines. All images get a class with the name of the engine to make styling possible. Images can get a caption with the caption attribute.
 
@@ -214,12 +214,6 @@ plantuml-command
 You can use the tikz latex package even outside pdf output. If the output is a pdf, native tikz is used. For other formats, an image is created.
 
 **Options:**
-
-width
-  : The width of the image. Needs a unit.
-
-height
-  : The height of the image. Needs a unit.
 
 tikz-packages
   : Global setting. A list of tikz-packages used.

@@ -22,6 +22,8 @@ from pandoc_styles import run_pandoc_styles_filter, CodeBlock
 
 
 def dot(self):
+    width = f'width={self.attributes.get("width")}' if self.attributes.get("width") else ""
+    height = f'height={self.attributes.get("height")}' if self.attributes.get("height") else ""
     fmt = self.attributes.get("format") or self.get_metadata("dot-image-format", "png")
     caption = self.attributes.get("caption", "")
     file_name = hashlib.md5(self.text.encode('utf-8')).hexdigest()[:9]
@@ -34,7 +36,7 @@ def dot(self):
 
     if not os.path.isfile(file_name):
         subprocess.run(f"dot -T{fmt} -o{file_name}", input=self.text, encoding="utf-8")
-    return f"![{caption}]({file_name}){{.dot}}"
+    return f"![{caption}]({file_name}){{.dot {width} {height}}}"
 
 
 if __name__ == "__main__":

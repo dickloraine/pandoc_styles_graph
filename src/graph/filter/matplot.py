@@ -32,6 +32,8 @@ from pandoc_styles import run_pandoc_styles_filter, CodeBlock
 RENDERER = {"png": "AGG", "ps": "PS", "pdf": "PDF", "svg": "SVG"}
 
 def plot(self):
+    width = f'width={self.attributes.get("width")}' if self.attributes.get("width") else ""
+    height = f'height={self.attributes.get("height")}' if self.attributes.get("height") else ""
     fmt = self.attributes.get("format") or self.get_metadata("plot-image-format", "png")
     renderer = self.attributes.get("renderer") or self.get_metadata("plot-renderer") or \
                RENDERER[fmt]
@@ -40,7 +42,7 @@ def plot(self):
     show = self.attributes.get("show") or \
            self.get_metadata("plot-show", False)
     caption = self.attributes.get("caption", "")
-    hash_src = self.text + "trans" if trans else ""
+    hash_src = self.text + "trans" if trans else self.text
     file_name = hashlib.md5(hash_src.encode('utf-8')).hexdigest()[:9]
     folder = self.attributes.get("folder") or self.get_metadata("plot-image-folder")
     if folder:
@@ -67,7 +69,7 @@ def plot(self):
             plt.figure(i)
             cur_file_name = f"{file_name}{i}.{fmt}"
             plt.savefig(cur_file_name, format=fmt, bbox_inches='tight', transparent=trans)
-            images.append(f"![{caption}]({cur_file_name}){{.plot}}")
+            images.append(f"![{caption}]({cur_file_name}){{.plot {width} {height}}}")
     images = "\n".join(images)
 
     if show:

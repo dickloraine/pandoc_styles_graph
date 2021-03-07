@@ -20,6 +20,8 @@ from pandoc_styles import run_pandoc_styles_filter, CodeBlock, run_process, file
 
 
 def plantuml(self):
+    width = f'width={self.attributes.get("width")}' if self.attributes.get("width") else ""
+    height = f'height={self.attributes.get("height")}' if self.attributes.get("height") else ""
     file_name_hash = hashlib.md5(self.text.encode('utf-8')).hexdigest()[:9]
     file_name = f"{file_name_hash}.png"
     folder = self.attributes.get("folder") or self.get_metadata("plantuml-image-folder")
@@ -38,7 +40,7 @@ def plantuml(self):
         else:
             run_process(f'{cmd} {temp_file}', True)
         os.remove(temp_file)
-    return f"![{caption}]({file_name}){{.plantuml}}"
+    return f"![{caption}]({file_name}){{.plantuml {width} {height}}}"
 
 
 if __name__ == "__main__":
