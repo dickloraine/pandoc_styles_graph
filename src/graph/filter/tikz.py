@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Converts a codeblock containing tikz tex code to an image and links that image if a
 non pdf or non latex format should be made.
@@ -21,6 +23,9 @@ The default image format is png. This can be changed by either an attribute
 to the codeblock named 'format' or for the whole document in the metadata block with
 a field named 'tikz-image-format'.
 
+You can give the path to magick with "magick-path". Defaults to "magick convert" on 
+windows and "convert" on other os.
+
 You can give the attribute "magick-convert-src" and magick-convert-dst image magick
 options to change how the image is created. The defaults use 300dpi and trim for src
 and highest quality for dst.
@@ -34,19 +39,28 @@ Needs image magick, pdflatex/lualatex and ghostscript
 """
 import hashlib
 import os
+import shutil
 from tempfile import TemporaryDirectory
 from pandoc_styles import (run_pandoc_styles_filter, CodeBlock, run_process, file_write,
                            change_dir, make_list, LATEX)
 
 
 def tikz(self):
-    if self.fmt == LATEX and not self.attributes.get("pdf"):
-        return [self.raw_block(self.text)]
-
     caption = self.attributes.get("caption", "")
+    if self.fmt == LATEX and not self.attributes.get("pdf"):
+        if caption != "":
+            return [
+                "\\begin{figure}\n" +
+                self.text +
+                f"\n\\caption{{{caption}}}\n\\end{{figure}}"
+            ]
+        return [self.raw_block(self.text)]
+    
     width = f'width={self.attributes.get("width")}' if self.attributes.get("width") else ""
     height = f'height={self.attributes.get("height")}' if self.attributes.get("height") else ""
     dpi = f'width={self.attributes.get("dpi")}' if self.attributes.get("dpi") else ""
+    magick_path = self.get_metadata("magick-path",
+                                    "magick convert" if os.name == "nt" else "convert")
     magick_convert_src = self.attributes.get("magick-convert-src") or \
         self.get_metadata("tikz-magick-convert-src", "-density 300 -trim")
     magick_convert_dst = self.attributes.get("magick-convert-dst") or \
@@ -81,9 +95,9 @@ def tikz(self):
             with change_dir(tmpdir):
                 temp_file = file_write(f"{file_name_hash}.tex", tex_code)
                 run_process(f'{latex_engine} {temp_file}', True)
-                run_process(f'magick convert {magick_convert_src} {file_name_hash}.pdf '
+                run_process(f'{magick_path} {magick_convert_src} {file_name_hash}.pdf '
                             f'{magick_convert_dst} {file_name}', True)
-                os.rename(file_name, file_path_abs)
+                shutil.move(file_name, file_path_abs)
     return f"![{caption}]({file_path}){{.tikz {width} {height} {dpi}}}"
 
 

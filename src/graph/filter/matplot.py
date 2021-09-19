@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Converts a codeblock containing a matplotlib plot to an image.
 

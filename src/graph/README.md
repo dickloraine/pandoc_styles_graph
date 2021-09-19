@@ -26,6 +26,8 @@ You can often give some options for the rendering. If the option should be used 
 
 The images are saved in the current folder by default. This can be changed in the metadata with `engine-image-folder`, where engine is the engine that should use that folder. The image format is per default png, but can be changed for some engines. All images get a class with the name of the engine to make styling possible. Images can get a caption with the caption attribute.
 
+You can give the path to each tool in the metadata with `tool-path`, if it isn't in the path.
+
 Here is an example of a mermaid graph with custom width and a caption. Transparent background and the image folder are set in the metadata:
 
     ---
@@ -54,6 +56,31 @@ Here is an example of a mermaid graph with custom width and a caption. Transpare
 **Name:**
 
 - dot
+
+**Example:**
+
+    ``` dot
+    digraph finite_state_machine {
+      rankdir=LR;
+      size="8,5"
+      node [shape = doublecircle]; 0 3 4 8;
+      node [shape = circle];
+      0 -> 2 [label = "SS(B)"];
+      0 -> 1 [label = "SS(S)"];
+      1 -> 3 [label = "S($end)"];
+      2 -> 6 [label = "SS(b)"];
+      2 -> 5 [label = "SS(a)"];
+      2 -> 4 [label = "S(A)"];
+      5 -> 7 [label = "S(b)"];
+      5 -> 5 [label = "S(a)"];
+      6 -> 6 [label = "S(b)"];
+      6 -> 5 [label = "S(a)"];
+      7 -> 8 [label = "S(b)"];
+      7 -> 5 [label = "S(a)"];
+      8 -> 6 [label = "S(b)"];
+      8 -> 5 [label = "S(a)"];
+    }
+    ```
 
 ### matplot
 

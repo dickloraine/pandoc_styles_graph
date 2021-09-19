@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Converts a codeblock containing mermaid code to an image and links that image.
 
@@ -6,6 +8,8 @@ The name of the produced file is generated from the hash of the code.
 The image gets a class of 'mermaid' to make special styling possible.
 
 You can give the image a caption with the attribute 'caption'.
+
+You can give the path to mermaid with "mermaid-path". Defaults to "mmdc".
 
 The image is saved in the current folder by default. To change this, either set the
 attribute 'folder' in the codeblock or globaly in the metadata block with the field
@@ -24,6 +28,7 @@ from pandoc_styles import run_pandoc_styles_filter, CodeBlock, run_process, file
 
 
 def mermaid(self):
+    mermaid_path = self.get_metadata("mermaid-path", "mmdc")
     fmt = self.attributes.get("format") or \
           self.get_metadata("mermaid-image-format", "png")
     wid = self.attributes.get("width") or self.get_metadata("mermaid-width", "800")
@@ -41,7 +46,7 @@ def mermaid(self):
 
     if not os.path.isfile(file_name):
         temp_file = file_write(f"{file_name_hash}.mmd", self.text)
-        run_process(f'mmdc -i {temp_file} -o "{file_name}" -w {wid} -H {hei} -b {bg}',
+        run_process(f'{mermaid_path} -i {temp_file} -o "{file_name}" -w {wid} -H {hei} -b {bg}',
                     shell=True)
         os.remove(temp_file)
     return f"![{caption}]({file_name}){{.mermaid}}"

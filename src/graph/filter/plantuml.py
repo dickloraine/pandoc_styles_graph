@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Converts a codeblock containing plantuml code to an image and links that image.
 
@@ -12,7 +14,7 @@ attribute 'folder' in the codeblock or globaly in the metadata block with the fi
 'plantuml-image-folder'.
 
 If the plantuml cl-command is not just 'plantuml' for your system, you can set the
-command with the metadata field 'plantuml-command'
+command with the metadata field 'plantuml-path'
 """
 import hashlib
 import os
@@ -32,7 +34,7 @@ def plantuml(self):
         file_name = os.path.join(folder, file_name)
 
     if not os.path.isfile(file_name):
-        cmd = self.get_metadata("plantuml-command", "plantuml")
+        cmd = self.get_metadata("plantuml-path", "plantuml")
         temp_file = file_write(f"{file_name_hash}.plt",
                                f"@startuml\n{self.text}\n@enduml")
         if folder:
